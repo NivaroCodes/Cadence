@@ -1,0 +1,31 @@
+# Environment
+.env
+.env.local
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Agent rules (do not commit)
+.agent-rules
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Redis/Cache
+*.rdb
+
+# Logs
+logs/
+*.log
