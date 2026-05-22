@@ -53,8 +53,8 @@ async def create_campaign(
             detail="Database integrity error."
         )
         
+    db_campaign.lead_count = len(db_campaign.leads)
     response_data = CampaignResponse.model_validate(db_campaign)
-    response_data.lead_count = len(db_campaign.leads)
     return response_data
 
 
@@ -76,8 +76,8 @@ async def list_campaigns(
     
     responses = []
     for c in campaigns:
+        c.lead_count = len(c.leads)
         resp = CampaignResponse.model_validate(c)
-        resp.lead_count = len(c.leads)
         responses.append(resp)
     return responses
 
@@ -93,8 +93,8 @@ async def get_campaign(
     if not db_campaign:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
         
+    db_campaign.lead_count = len(db_campaign.leads)
     response_data = CampaignResponse.model_validate(db_campaign)
-    response_data.lead_count = len(db_campaign.leads)
     return response_data
 
 
@@ -123,8 +123,8 @@ async def update_campaign(
             detail="Database integrity error."
         )
         
+    db_campaign.lead_count = len(db_campaign.leads)
     response_data = CampaignResponse.model_validate(db_campaign)
-    response_data.lead_count = len(db_campaign.leads)
     return response_data
 
 
@@ -164,8 +164,8 @@ async def start_campaign(
     await db.commit()
     await db.refresh(db_campaign)
     
+    db_campaign.lead_count = len(db_campaign.leads)
     response_data = CampaignResponse.model_validate(db_campaign)
-    response_data.lead_count = len(db_campaign.leads)
     return response_data
 
 
@@ -187,8 +187,8 @@ async def pause_campaign(
     await db.commit()
     await db.refresh(db_campaign)
     
+    db_campaign.lead_count = len(db_campaign.leads)
     response_data = CampaignResponse.model_validate(db_campaign)
-    response_data.lead_count = len(db_campaign.leads)
     return response_data
 
 
