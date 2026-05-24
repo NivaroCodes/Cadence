@@ -29,3 +29,7 @@ Thumbs.db
 # Logs
 logs/
 *.log
+
+# Gmail OAuth secrets
+credentials.json
+token.pickle
