@@ -17,6 +17,13 @@ from app.services.telegram_service import TelegramService
 
 logger = logging.getLogger(__name__)
 
+MAX_REPLY_CHECK_ATTEMPTS = 5
+
+
+async def _schedule_reply_check(message_id_str: str) -> None:
+    runner = CampaignRunner()
+    await runner.check_replies_for_message(uuid.UUID(message_id_str))
+
 
 class CampaignRunner:
     def __init__(self) -> None:
@@ -136,10 +143,68 @@ class CampaignRunner:
                     )
                     db.add(msg)
                     await db.commit()
+                    await db.refresh(msg)
                     logger.info("Saved sequence 1 message for lead %s in campaign %s", lead.id, campaign_id)
+
+                    from app.services.scheduler import scheduler
+                    run_time = datetime.now(timezone.utc) + timedelta(minutes=30)
+                    scheduler.add_job(
+                        _schedule_reply_check,
+                        trigger='date',
+                        run_date=run_time,
+                        args=[str(msg.id)],
+                        id=f"reply_check_{msg.id}",
+                        replace_existing=True,
+                    )
+                    logger.info("Scheduled reply check for message %s at %s", msg.id, run_time)
 
             except Exception:
                 logger.exception("Failed to process campaign %s for lead %s", campaign_id, lead.id)
+
+    async def check_replies_for_message(self, message_id: uuid.UUID) -> None:
+        async with AsyncSessionLocal() as db:
+            stmt = (
+                select(Message)
+                .options(selectinload(Message.lead))
+                .where(Message.id == message_id)
+            )
+            result = await db.execute(stmt)
+            message = result.scalars().first()
+
+            if not message or message.status != MessageStatus.sent:
+                return
+
+            reply_ids = await self._gmail_service.search_replies(
+                message.lead.email, message.sent_at
+            )
+
+            if reply_ids:
+                message.status = MessageStatus.replied
+                await db.commit()
+                logger.info("Reply detected for lead %s, message %s", message.lead.email, message_id)
+                return
+
+            message.reply_check_attempts += 1
+            await db.commit()
+
+            if message.reply_check_attempts < MAX_REPLY_CHECK_ATTEMPTS:
+                from app.services.scheduler import scheduler
+                run_time = datetime.now(timezone.utc) + timedelta(hours=1)
+                scheduler.add_job(
+                    _schedule_reply_check,
+                    trigger='date',
+                    run_date=run_time,
+                    args=[str(message_id)],
+                    id=f"reply_check_{message_id}_{message.reply_check_attempts}",
+                    replace_existing=True,
+                )
+                logger.info(
+                    "No reply for %s — attempt %d/%d, next check at %s",
+                    message.lead.email, message.reply_check_attempts,
+                    MAX_REPLY_CHECK_ATTEMPTS, run_time,
+                )
+            else:
+                logger.info("Max reply checks reached for message %s", message_id)
 
     async def _run_followups_impl(self, db: AsyncSession) -> None:
         # Step 1: Follow-up sequence 1 -> 2 (sent >= 3 days ago)

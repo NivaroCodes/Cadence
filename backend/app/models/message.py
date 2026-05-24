@@ -55,6 +55,7 @@ class Message(Base):
     )
     recipient_address: Mapped[str] = mapped_column(String(500), nullable=False)
     sequence_number: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    reply_check_attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     opened_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
