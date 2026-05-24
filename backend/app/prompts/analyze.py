@@ -16,6 +16,7 @@ Rules:
 - If a field cannot be inferred, make the most reasonable educated guess — never return null.
 - pain_points must be specific to the company's likely situation, not generic.
 - Do not include any explanation outside the JSON object.
+- CRITICAL: Never use placeholder text like [CEO Name], [Company Name], or bracketed template variables in any JSON field.
 """
 
 

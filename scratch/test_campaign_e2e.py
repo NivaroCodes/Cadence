@@ -70,8 +70,22 @@ async def main():
     
     status, lead_data = make_request("POST", "/api/v1/leads", lead_payload)
     if status != 201:
-        print(f"[FAIL] Failed to create lead: {lead_data}")
-        sys.exit(1)
+        if isinstance(lead_data, dict) and "already exists" in str(lead_data.get("detail", "")):
+            status_list, leads_list = make_request("GET", "/api/v1/leads")
+            if status_list == 200:
+                matching = [l for l in leads_list if l.get("email") == lead_email]
+                if matching:
+                    lead_data = matching[0]
+                    print(f"[INFO] Using existing Lead {lead_data['id']}")
+                else:
+                    print(f"[FAIL] Lead exists but not found in list: {lead_data}")
+                    sys.exit(1)
+            else:
+                print(f"[FAIL] Failed to list leads: {leads_list}")
+                sys.exit(1)
+        else:
+            print(f"[FAIL] Failed to create lead: {lead_data}")
+            sys.exit(1)
         
     lead_id = lead_data["id"]
     print(f"[PASS] Created Lead {lead_id} successfully")

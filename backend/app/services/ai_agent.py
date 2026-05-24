@@ -75,8 +75,16 @@ class GeminiAgent:
         lead_analysis: dict,
         campaign_tone: str,
         language: str,
+        lead_name: str | None = None,
+        company_name: str | None = None,
     ) -> str:
-        prompt = build_email_prompt(lead_analysis, campaign_tone, language)
+        prompt = build_email_prompt(
+            lead_analysis,
+            campaign_tone,
+            language,
+            lead_name=lead_name,
+            company_name=company_name,
+        )
         logger.info("Generating email | tone=%s lang=%s", campaign_tone, language)
 
         def _call() -> str:

@@ -86,7 +86,9 @@ class CampaignRunner:
                 content = await self._ai_agent.generate_email(
                     analysis,
                     campaign.tone.value if hasattr(campaign.tone, "value") else str(campaign.tone),
-                    campaign.language.value if hasattr(campaign.language, "value") else str(campaign.language)
+                    campaign.language.value if hasattr(campaign.language, "value") else str(campaign.language),
+                    lead_name=lead.name,
+                    company_name=lead.company
                 )
                 await asyncio.sleep(8)
 
