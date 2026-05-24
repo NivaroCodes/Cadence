@@ -1,0 +1,29 @@
+app = "cadence-backend"
+primary_region = "ams"
+
+[build]
+  dockerfile = "backend/Dockerfile"
+
+[env]
+  PORT = "8080"
+  PERSISTENT_DATA_DIR = "/data"
+  GMAIL_CREDENTIALS_PATH = "/data/credentials.json"
+  GMAIL_TOKEN_PATH = "/data/token.pickle"
+  APP_ENV = "production"
+  DEBUG = "False"
+
+[[mounts]]
+  source = "cadence_data"
+  destination = "/data"
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]

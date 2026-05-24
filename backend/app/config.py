@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     REDIS_URL: str
     GMAIL_CREDENTIALS_PATH: str
+    GMAIL_TOKEN_PATH: str = "token.pickle"
     TELEGRAM_BOT_TOKEN: str
 
     APP_ENV: str = "dev"

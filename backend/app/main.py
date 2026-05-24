@@ -1,9 +1,28 @@
+import base64
 import logging
+import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
+
+def init_persistent_secrets():
+    data_dir = Path(os.getenv("PERSISTENT_DATA_DIR", "./"))
+    data_dir.mkdir(parents=True, exist_ok=True)
+    
+    creds_b64 = os.getenv("GMAIL_CREDENTIALS_B64")
+    creds_path = Path(os.getenv("GMAIL_CREDENTIALS_PATH", "./credentials.json"))
+    if creds_b64 and not creds_path.exists():
+        creds_path.write_bytes(base64.b64decode(creds_b64))
+
+    token_b64 = os.getenv("GMAIL_TOKEN_B64")
+    token_path = Path(os.getenv("GMAIL_TOKEN_PATH", "./token.pickle"))
+    if token_b64 and not token_path.exists():
+        token_path.write_bytes(base64.b64decode(token_b64))
+
+init_persistent_secrets()
 
 from app.config import settings
 from app.database import AsyncSessionLocal, engine

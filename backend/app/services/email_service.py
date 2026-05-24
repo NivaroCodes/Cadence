@@ -20,10 +20,12 @@ class GmailService:
         self._available = os.path.exists(self.credentials_path)
 
     def _load_credentials(self):
+        from app.config import settings
+        token_path = settings.GMAIL_TOKEN_PATH
         creds = None
         
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
+        if os.path.exists(token_path):
+            with open(token_path, 'rb') as token:
                 creds = pickle.load(token)
         
         if not creds or not creds.valid:
@@ -34,7 +36,7 @@ class GmailService:
                     self.credentials_path, SCOPES)
                 creds = flow.run_local_server(port=0)
             
-            with open('token.pickle', 'wb') as token:
+            with open(token_path, 'wb') as token:
                 pickle.dump(creds, token)
         
         return creds
