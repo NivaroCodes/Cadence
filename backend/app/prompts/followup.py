@@ -25,11 +25,16 @@ def build_followup_prompt(
     original_email: str,
     sequence: int,
     language: str,
+    lead_name: str | None = None,
+    company_name: str | None = None,
 ) -> str:
     if sequence not in _SEQUENCE_FRAMING:
         raise ValueError(f"sequence must be 1 or 2, got {sequence}")
     if language not in _LANGUAGE_INSTRUCTION:
         raise ValueError(f"language must be one of ru/kz/en, got {language}")
+
+    company = company_name or "your company"
+    recipient_name = lead_name or ""
 
     return (
         f"{_LANGUAGE_INSTRUCTION[language]}\n"
@@ -38,5 +43,12 @@ def build_followup_prompt(
         f"---\n"
         f"{original_email}\n"
         f"---\n\n"
-        f"Write the follow-up message body only. No subject line."
+        f"Constraints:\n"
+        f"- Write the follow-up message body only. No subject line.\n"
+        f"- Recipient Name: {recipient_name}\n"
+        f"- Company: {company}\n"
+        f"- CRITICAL: Never use placeholder text like [CEO Name], [Company Name], [My Name], [My Title]. "
+        f"If you don't know the CEO/recipient name, use a neutral greeting like 'Hi there,' or 'Hi {company} team,'. "
+        f"Replace [Company Name] with the actual company name from context: {company}. "
+        f"Sign the email as 'The Cadence Team'.\n"
     )

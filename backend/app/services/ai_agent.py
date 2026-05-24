@@ -107,8 +107,16 @@ class GeminiAgent:
         original_email: str,
         sequence: int,
         language: str,
+        lead_name: str | None = None,
+        company_name: str | None = None,
     ) -> str:
-        prompt = build_followup_prompt(original_email, sequence, language)
+        prompt = build_followup_prompt(
+            original_email,
+            sequence,
+            language,
+            lead_name=lead_name,
+            company_name=company_name,
+        )
         logger.info("Generating follow-up | sequence=%d lang=%s", sequence, language)
 
         def _call() -> str:

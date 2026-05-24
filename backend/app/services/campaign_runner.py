@@ -167,7 +167,9 @@ class CampaignRunner:
                 followup_content = await self._ai_agent.generate_followup(
                     original_email=m.content,
                     sequence=1,
-                    language=lang
+                    language=lang,
+                    lead_name=m.lead.name,
+                    company_name=m.lead.company
                 )
                 await asyncio.sleep(8)
 
@@ -235,7 +237,9 @@ class CampaignRunner:
                 followup_content = await self._ai_agent.generate_followup(
                     original_email=m.content,
                     sequence=2,
-                    language=lang
+                    language=lang,
+                    lead_name=m.lead.name,
+                    company_name=m.lead.company
                 )
                 await asyncio.sleep(8)
 
