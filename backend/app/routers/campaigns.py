@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +13,7 @@ from app.database import get_db
 from app.models.campaign import Campaign, CampaignStatus
 from app.models.lead import Lead
 from app.schemas import CampaignCreate, CampaignResponse, CampaignUpdate
+from app.services.campaign_runner import CampaignRunner
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,6 @@ async def create_campaign(
     try:
         await db.commit()
         await db.refresh(db_campaign)
-        # Load leads to count them
         stmt = select(Campaign).options(selectinload(Campaign.leads)).where(Campaign.id == db_campaign.id)
         result = await db.execute(stmt)
         db_campaign = result.scalars().first()
@@ -145,7 +145,9 @@ async def delete_campaign(
 
 @router.post("/{campaign_id}/start", response_model=CampaignResponse)
 async def start_campaign(
-    campaign_id: uuid.UUID, db: AsyncSession = Depends(get_db)
+    campaign_id: uuid.UUID,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db)
 ) -> Any:
     stmt = select(Campaign).options(selectinload(Campaign.leads)).where(Campaign.id == campaign_id)
     result = await db.execute(stmt)
@@ -163,6 +165,8 @@ async def start_campaign(
         
     await db.commit()
     await db.refresh(db_campaign)
+    
+    background_tasks.add_task(CampaignRunner().run_campaign, db_campaign.id)
     
     db_campaign.lead_count = len(db_campaign.leads)
     response_data = CampaignResponse.model_validate(db_campaign)
@@ -203,11 +207,10 @@ async def campaign_stats(
     if not db_campaign:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
         
-    # We can expand this later when we have messages and their statuses
     return {
         "campaign_id": str(db_campaign.id),
         "status": db_campaign.status.value,
         "total_leads": len(db_campaign.leads),
-        "messages_sent": 0,  # Placeholder for future implementation
-        "replies_received": 0, # Placeholder
+        "messages_sent": 0,
+        "replies_received": 0,
     }

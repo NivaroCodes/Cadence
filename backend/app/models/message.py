@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, Enum, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -25,6 +25,9 @@ class MessageStatus(str, enum.Enum):
 
 class Message(Base):
     __tablename__ = "messages"
+    __table_args__ = (
+        Index("ix_messages_campaign_lead_seq", "campaign_id", "lead_id", "sequence_number"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
@@ -51,7 +54,6 @@ class Message(Base):
         default=MessageStatus.draft,
     )
     recipient_address: Mapped[str] = mapped_column(String(500), nullable=False)
-    # 1 = initial touch, 2 = follow-up 1, 3 = follow-up 2
     sequence_number: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
 
     sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

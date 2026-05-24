@@ -23,7 +23,6 @@ router = APIRouter()
 async def create_lead(
     lead_in: LeadCreate, db: AsyncSession = Depends(get_db)
 ) -> Any:
-    # Check if lead with email exists
     stmt = select(Lead).where(Lead.email == str(lead_in.email))
     result = await db.execute(stmt)
     if result.scalars().first():
@@ -87,7 +86,6 @@ async def update_lead(
 
     update_data = lead_in.model_dump(exclude_unset=True)
     if "email" in update_data:
-        # Check if email is being updated to an existing one
         check_stmt = select(Lead).where(Lead.email == str(update_data["email"]), Lead.id != lead_id)
         check_res = await db.execute(check_stmt)
         if check_res.scalars().first():
@@ -144,7 +142,6 @@ async def import_leads_csv(
     
     reader = csv.DictReader(io.StringIO(decoded))
     
-    # Verify required columns
     required_cols = {"name", "company", "email"}
     if not reader.fieldnames or not required_cols.issubset(set(reader.fieldnames)):
         raise HTTPException(
@@ -167,7 +164,6 @@ async def import_leads_csv(
                 industry=row.get("industry", "").strip() or None,
             )
             
-            # Simple check if email already exists in DB
             stmt = select(Lead).where(Lead.email == str(lead_in.email))
             result = await db.execute(stmt)
             if result.scalars().first():

@@ -110,6 +110,9 @@ class GmailService:
     async def send_email(self, to: str, subject: str, body: str) -> bool:
         if not self._available:
             logger.warning("send_email skipped — Gmail credentials missing")
+            if settings.APP_ENV == "dev":
+                logger.info("Dev environment: Mocking successful email send to %s", to)
+                return True
             return False
         try:
             return await asyncio.to_thread(_sync_send, to, subject, body)

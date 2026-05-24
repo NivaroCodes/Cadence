@@ -16,13 +16,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+from app.services.scheduler import start_scheduler, stop_scheduler
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting Cadence API [env=%s]", settings.APP_ENV)
     async with AsyncSessionLocal() as session:
         await session.execute(text("SELECT 1"))
     logger.info("Database connection verified")
+    await start_scheduler()
     yield
+    await stop_scheduler()
     await engine.dispose()
     logger.info("Engine disposed, shutdown complete")
 
