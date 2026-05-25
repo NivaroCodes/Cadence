@@ -1,19 +1,34 @@
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, String, Text
+from sqlalchemy import DateTime, ForeignKey, Index, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.database import Base
 
+if TYPE_CHECKING:
+    from app.models.user import User
+    from app.models.campaign import Campaign
+    from app.models.message import Message
+
 
 class Lead(Base):
     __tablename__ = "leads"
+    __table_args__ = (
+        Index("ix_leads_user_created_at", "user_id", "created_at"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     company: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -34,9 +49,10 @@ class Lead(Base):
         nullable=False,
     )
 
-    campaigns: Mapped[list["Campaign"]] = relationship(  # noqa: F821
+    user: Mapped["User"] = relationship("User", back_populates="leads")
+    campaigns: Mapped[list["Campaign"]] = relationship(
         "Campaign", secondary="campaign_leads", back_populates="leads"
     )
-    messages: Mapped[list["Message"]] = relationship(  # noqa: F821
+    messages: Mapped[list["Message"]] = relationship(
         "Message", back_populates="lead"
     )

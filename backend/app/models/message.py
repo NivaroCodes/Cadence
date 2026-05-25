@@ -1,6 +1,7 @@
 import enum
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Enum, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
@@ -8,6 +9,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.database import Base
+
+if TYPE_CHECKING:
+    from app.models.user import User
+    from app.models.campaign import Campaign
+    from app.models.lead import Lead
 
 
 class MessageChannel(str, enum.Enum):
@@ -27,10 +33,17 @@ class Message(Base):
     __tablename__ = "messages"
     __table_args__ = (
         Index("ix_messages_campaign_lead_seq", "campaign_id", "lead_id", "sequence_number"),
+        Index("ix_messages_user_created_at", "user_id", "created_at"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     campaign_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -63,9 +76,10 @@ class Message(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
-    campaign: Mapped["Campaign"] = relationship(  # noqa: F821
+    user: Mapped["User"] = relationship("User", back_populates="messages")
+    campaign: Mapped["Campaign"] = relationship(
         "Campaign", back_populates="messages"
     )
-    lead: Mapped["Lead"] = relationship(  # noqa: F821
+    lead: Mapped["Lead"] = relationship(
         "Lead", back_populates="messages"
     )

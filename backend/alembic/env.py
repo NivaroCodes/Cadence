@@ -20,6 +20,9 @@ from app.database import Base
 from app.models.lead import Lead
 from app.models.campaign import Campaign
 from app.models.message import Message
+from app.models.user import User
+from app.models.gmail_credential import GmailCredential
+from app.models.api_key import ApiKey
 
 # Dynamic URL configuration for Alembic
 url = settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1).replace("postgres://", "postgresql+asyncpg://", 1)

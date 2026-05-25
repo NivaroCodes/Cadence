@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, String, Table, Text
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Index, String, Table, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -11,6 +11,8 @@ from sqlalchemy.sql import func
 from app.database import Base
 
 if TYPE_CHECKING:
+    from app.models.user import User
+    from app.models.lead import Lead
     from app.models.message import Message
 
 
@@ -37,9 +39,18 @@ campaign_leads = Table(
 
 class Campaign(Base):
     __tablename__ = "campaigns"
+    __table_args__ = (
+        Index("ix_campaigns_user_created_at", "user_id", "created_at"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
@@ -61,9 +72,10 @@ class Campaign(Base):
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
-    leads: Mapped[list["Lead"]] = relationship(  # noqa: F821
+    user: Mapped["User"] = relationship("User", back_populates="campaigns")
+    leads: Mapped[list["Lead"]] = relationship(
         "Lead", secondary="campaign_leads", back_populates="campaigns"
     )
-    messages: Mapped[list["Message"]] = relationship(  # noqa: F821
+    messages: Mapped[list["Message"]] = relationship(
         "Message", back_populates="campaign"
     )
