@@ -23,5 +23,10 @@ class Settings(BaseSettings):
     JWT_EXPIRATION_HOURS: int = 24
     PASSWORD_MIN_LENGTH: int = 8
 
+    GOOGLE_CLIENT_ID: str = "dummy_google_client_id_for_dev_only"
+    GOOGLE_CLIENT_SECRET: str = "dummy_google_client_secret_for_dev_only"
+    GOOGLE_REDIRECT_URI: str = "http://localhost:8000/oauth/google/callback"
+    ENCRYPTION_KEY: str = "fallback_dev_key_32_chars_long"
+
 
 settings = Settings()

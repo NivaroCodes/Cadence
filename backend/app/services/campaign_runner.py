@@ -116,7 +116,8 @@ class CampaignRunner:
                     else:
                         subject = f"Partnership proposal for {lead.company}"
 
-                    sent = await self._gmail_service.send_email(
+                    gmail_service = GmailService(user_id=campaign.user_id)
+                    sent = await gmail_service.send_email(
                         to=lead.email,
                         subject=subject,
                         body=content
@@ -174,7 +175,8 @@ class CampaignRunner:
             if not message or message.status != MessageStatus.sent:
                 return
 
-            reply_ids = await self._gmail_service.search_replies(
+            gmail_service = GmailService(user_id=message.user_id)
+            reply_ids = await gmail_service.search_replies(
                 message.lead.email, message.sent_at
             )
 
@@ -247,7 +249,8 @@ class CampaignRunner:
                     else:
                         subject = f"Re: Partnership proposal for {m.lead.company}"
 
-                    sent = await self._gmail_service.send_email(
+                    gmail_service = GmailService(user_id=m.campaign.user_id)
+                    sent = await gmail_service.send_email(
                         to=m.lead.email,
                         subject=subject,
                         body=followup_content
@@ -317,7 +320,8 @@ class CampaignRunner:
                     else:
                         subject = f"Re: Partnership proposal for {m.lead.company}"
 
-                    sent = await self._gmail_service.send_email(
+                    gmail_service = GmailService(user_id=m.campaign.user_id)
+                    sent = await gmail_service.send_email(
                         to=m.lead.email,
                         subject=subject,
                         body=followup_content

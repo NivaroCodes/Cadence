@@ -23,6 +23,7 @@ class GmailCredential(Base):
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
+        unique=True,
         index=True,
     )
     email: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -35,6 +36,11 @@ class GmailCredential(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
+        nullable=False,
+    )
+    connected_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
         nullable=False,
     )
 
