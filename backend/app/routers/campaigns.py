@@ -12,6 +12,8 @@ from sqlalchemy.orm import selectinload
 from app.database import get_db
 from app.models.campaign import Campaign, CampaignStatus
 from app.models.lead import Lead
+from app.models.user import User
+from app.dependencies import get_current_user
 from app.schemas import CampaignCreate, CampaignResponse, CampaignUpdate
 from app.services.campaign_runner import CampaignRunner
 
@@ -22,9 +24,12 @@ router = APIRouter()
 
 @router.post("", response_model=CampaignResponse, status_code=status.HTTP_201_CREATED)
 async def create_campaign(
-    campaign_in: CampaignCreate, db: AsyncSession = Depends(get_db)
+    campaign_in: CampaignCreate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ) -> Any:
     db_campaign = Campaign(
+        user_id=current_user.id,
         name=campaign_in.name,
         description=campaign_in.description,
         tone=campaign_in.tone,
@@ -32,11 +37,11 @@ async def create_campaign(
     )
     
     if campaign_in.lead_ids:
-        stmt = select(Lead).where(Lead.id.in_(campaign_in.lead_ids))
+        stmt = select(Lead).where(Lead.id.in_(campaign_in.lead_ids), Lead.user_id == current_user.id)
         result = await db.execute(stmt)
         leads = list(result.scalars().all())
         if len(leads) != len(campaign_in.lead_ids):
-            logger.warning("Some lead IDs provided were not found.")
+            logger.warning("Some lead IDs provided were not found or not owned by current user.")
         db_campaign.leads = leads
 
     db.add(db_campaign)
@@ -60,6 +65,7 @@ async def create_campaign(
 
 @router.get("", response_model=list[CampaignResponse])
 async def list_campaigns(
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
@@ -67,6 +73,7 @@ async def list_campaigns(
     stmt = (
         select(Campaign)
         .options(selectinload(Campaign.leads))
+        .where(Campaign.user_id == current_user.id)
         .order_by(Campaign.created_at.desc())
         .offset(skip)
         .limit(limit)
@@ -84,14 +91,16 @@ async def list_campaigns(
 
 @router.get("/{campaign_id}", response_model=CampaignResponse)
 async def get_campaign(
-    campaign_id: uuid.UUID, db: AsyncSession = Depends(get_db)
+    campaign_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ) -> Any:
-    stmt = select(Campaign).options(selectinload(Campaign.leads)).where(Campaign.id == campaign_id)
+    stmt = select(Campaign).options(selectinload(Campaign.leads)).where((Campaign.id == campaign_id) & (Campaign.user_id == current_user.id))
     result = await db.execute(stmt)
     db_campaign = result.scalars().first()
     
     if not db_campaign:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
         
     db_campaign.lead_count = len(db_campaign.leads)
     response_data = CampaignResponse.model_validate(db_campaign)
@@ -100,16 +109,27 @@ async def get_campaign(
 
 @router.put("/{campaign_id}", response_model=CampaignResponse)
 async def update_campaign(
-    campaign_id: uuid.UUID, campaign_in: CampaignUpdate, db: AsyncSession = Depends(get_db)
+    campaign_id: uuid.UUID,
+    campaign_in: CampaignUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ) -> Any:
     stmt = select(Campaign).options(selectinload(Campaign.leads)).where(Campaign.id == campaign_id)
     result = await db.execute(stmt)
     db_campaign = result.scalars().first()
     
     if not db_campaign:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if db_campaign.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
 
     update_data = campaign_in.model_dump(exclude_unset=True)
+    if "lead_ids" in update_data and update_data["lead_ids"]:
+        stmt_leads = select(Lead).where(Lead.id.in_(update_data["lead_ids"]), Lead.user_id == current_user.id)
+        res_leads = await db.execute(stmt_leads)
+        db_campaign.leads = list(res_leads.scalars().all())
+        del update_data["lead_ids"]
+
     for field, value in update_data.items():
         setattr(db_campaign, field, value)
 
@@ -130,14 +150,18 @@ async def update_campaign(
 
 @router.delete("/{campaign_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_campaign(
-    campaign_id: uuid.UUID, db: AsyncSession = Depends(get_db)
+    campaign_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ) -> None:
     stmt = select(Campaign).where(Campaign.id == campaign_id)
     result = await db.execute(stmt)
     db_campaign = result.scalars().first()
     
     if not db_campaign:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if db_campaign.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
 
     await db.delete(db_campaign)
     await db.commit()
@@ -147,6 +171,7 @@ async def delete_campaign(
 async def start_campaign(
     campaign_id: uuid.UUID,
     background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ) -> Any:
     stmt = select(Campaign).options(selectinload(Campaign.leads)).where(Campaign.id == campaign_id)
@@ -154,7 +179,9 @@ async def start_campaign(
     db_campaign = result.scalars().first()
     
     if not db_campaign:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if db_campaign.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
         
     if db_campaign.status == CampaignStatus.active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Campaign is already active")
@@ -175,14 +202,18 @@ async def start_campaign(
 
 @router.post("/{campaign_id}/pause", response_model=CampaignResponse)
 async def pause_campaign(
-    campaign_id: uuid.UUID, db: AsyncSession = Depends(get_db)
+    campaign_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ) -> Any:
     stmt = select(Campaign).options(selectinload(Campaign.leads)).where(Campaign.id == campaign_id)
     result = await db.execute(stmt)
     db_campaign = result.scalars().first()
     
     if not db_campaign:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if db_campaign.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
         
     if db_campaign.status != CampaignStatus.active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only active campaigns can be paused")
@@ -198,14 +229,18 @@ async def pause_campaign(
 
 @router.get("/{campaign_id}/stats")
 async def campaign_stats(
-    campaign_id: uuid.UUID, db: AsyncSession = Depends(get_db)
+    campaign_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ) -> dict[str, Any]:
     stmt = select(Campaign).options(selectinload(Campaign.leads)).where(Campaign.id == campaign_id)
     result = await db.execute(stmt)
     db_campaign = result.scalars().first()
     
     if not db_campaign:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if db_campaign.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
         
     return {
         "campaign_id": str(db_campaign.id),

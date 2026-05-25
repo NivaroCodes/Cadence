@@ -12,6 +12,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.lead import Lead
+from app.models.user import User
+from app.dependencies import get_current_user
 from app.schemas import LeadCreate, LeadResponse, LeadUpdate
 
 logger = logging.getLogger(__name__)
@@ -21,7 +23,9 @@ router = APIRouter()
 
 @router.post("", response_model=LeadResponse, status_code=status.HTTP_201_CREATED)
 async def create_lead(
-    lead_in: LeadCreate, db: AsyncSession = Depends(get_db)
+    lead_in: LeadCreate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ) -> Any:
     stmt = select(Lead).where(Lead.email == str(lead_in.email))
     result = await db.execute(stmt)
@@ -31,7 +35,10 @@ async def create_lead(
             detail="Lead with this email already exists."
         )
 
-    db_lead = Lead(**lead_in.model_dump(exclude_unset=True, exclude_none=True))
+    db_lead = Lead(
+        user_id=current_user.id,
+        **lead_in.model_dump(exclude_unset=True, exclude_none=True)
+    )
     if db_lead.linkedin_url:
         db_lead.linkedin_url = str(db_lead.linkedin_url)
     if db_lead.website:
@@ -52,37 +59,51 @@ async def create_lead(
 
 @router.get("", response_model=list[LeadResponse])
 async def list_leads(
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> Any:
-    stmt = select(Lead).order_by(Lead.created_at.desc()).offset(skip).limit(limit)
+    stmt = (
+        select(Lead)
+        .where(Lead.user_id == current_user.id)
+        .order_by(Lead.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    )
     result = await db.execute(stmt)
     return result.scalars().all()
 
 
 @router.get("/{lead_id}", response_model=LeadResponse)
 async def get_lead(
-    lead_id: uuid.UUID, db: AsyncSession = Depends(get_db)
+    lead_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ) -> Any:
-    stmt = select(Lead).where(Lead.id == lead_id)
+    stmt = select(Lead).where((Lead.id == lead_id) & (Lead.user_id == current_user.id))
     result = await db.execute(stmt)
     db_lead = result.scalars().first()
     if not db_lead:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lead not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
     return db_lead
 
 
 @router.put("/{lead_id}", response_model=LeadResponse)
 async def update_lead(
-    lead_id: uuid.UUID, lead_in: LeadUpdate, db: AsyncSession = Depends(get_db)
+    lead_id: uuid.UUID,
+    lead_in: LeadUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ) -> Any:
     stmt = select(Lead).where(Lead.id == lead_id)
     result = await db.execute(stmt)
     db_lead = result.scalars().first()
     
     if not db_lead:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lead not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if db_lead.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
 
     update_data = lead_in.model_dump(exclude_unset=True)
     if "email" in update_data:
@@ -117,14 +138,18 @@ async def update_lead(
 
 @router.delete("/{lead_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_lead(
-    lead_id: uuid.UUID, db: AsyncSession = Depends(get_db)
+    lead_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ) -> None:
     stmt = select(Lead).where(Lead.id == lead_id)
     result = await db.execute(stmt)
     db_lead = result.scalars().first()
     
     if not db_lead:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lead not found")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+    if db_lead.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
 
     await db.delete(db_lead)
     await db.commit()
@@ -132,7 +157,9 @@ async def delete_lead(
 
 @router.post("/import-csv", status_code=status.HTTP_200_OK)
 async def import_leads_csv(
-    file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ) -> Any:
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="Only CSV files are allowed.")
@@ -170,7 +197,10 @@ async def import_leads_csv(
                 errors.append(f"Row {row_idx}: Email '{lead_in.email}' already exists.")
                 continue
                 
-            db_lead = Lead(**lead_in.model_dump(exclude_unset=True, exclude_none=True))
+            db_lead = Lead(
+                user_id=current_user.id,
+                **lead_in.model_dump(exclude_unset=True, exclude_none=True)
+            )
             if db_lead.linkedin_url:
                 db_lead.linkedin_url = str(db_lead.linkedin_url)
             if db_lead.website:

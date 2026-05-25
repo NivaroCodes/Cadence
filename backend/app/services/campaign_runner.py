@@ -209,6 +209,9 @@ class CampaignRunner:
                 logger.info("Max reply checks reached for message %s", message_id)
 
     async def _run_followups_impl(self, db: AsyncSession) -> None:
+        from uuid import UUID
+        ADMIN_UUID = UUID("00000000-0000-0000-0000-000000000000")
+
         # Step 1: Follow-up sequence 1 -> 2 (sent >= 3 days ago)
         stmt_has_seq_2 = select(Message.campaign_id, Message.lead_id).where(Message.sequence_number == 2)
         res_has_seq_2 = await db.execute(stmt_has_seq_2)
@@ -218,9 +221,11 @@ class CampaignRunner:
         stmt_seq_1 = (
             select(Message)
             .options(selectinload(Message.campaign), selectinload(Message.lead))
+            .join(Campaign, Message.campaign_id == Campaign.id)
             .where(Message.sequence_number == 1)
             .where(Message.status == MessageStatus.sent)
             .where(Message.sent_at <= three_days_ago)
+            .where(Campaign.user_id == ADMIN_UUID)
         )
         res_seq_1 = await db.execute(stmt_seq_1)
         messages_seq_1 = res_seq_1.scalars().all()
@@ -289,9 +294,11 @@ class CampaignRunner:
         stmt_seq_2 = (
             select(Message)
             .options(selectinload(Message.campaign), selectinload(Message.lead))
+            .join(Campaign, Message.campaign_id == Campaign.id)
             .where(Message.sequence_number == 2)
             .where(Message.status == MessageStatus.sent)
             .where(Message.sent_at <= seven_days_ago)
+            .where(Campaign.user_id == ADMIN_UUID)
         )
         res_seq_2 = await db.execute(stmt_seq_2)
         messages_seq_2 = res_seq_2.scalars().all()
@@ -352,10 +359,16 @@ class CampaignRunner:
                 logger.exception("Failed to process follow-up sequence 3 for lead %s", m.lead_id)
 
     async def _run_active_campaigns_impl(self, db: AsyncSession) -> None:
-        stmt = select(Campaign).where(Campaign.status == CampaignStatus.active)
+        from uuid import UUID
+        ADMIN_UUID = UUID("00000000-0000-0000-0000-000000000000")
+        
+        stmt = select(Campaign).where(
+            (Campaign.status == CampaignStatus.active) &
+            (Campaign.user_id == ADMIN_UUID)
+        )
         result = await db.execute(stmt)
         active_campaigns = result.scalars().all()
-        logger.info("Running active campaigns runner | %d campaigns active", len(active_campaigns))
+        logger.info("Running active campaigns runner for ADMIN | %d campaigns active", len(active_campaigns))
 
         for c in active_campaigns:
             await self._run_campaign_impl(c.id, db)
