@@ -26,7 +26,7 @@ init_persistent_secrets()
 
 from app.config import settings
 from app.database import AsyncSessionLocal, engine
-from app.routers import campaigns, leads
+from app.routers import auth, campaigns, leads
 
 logging.basicConfig(
     level=logging.DEBUG if settings.DEBUG else logging.INFO,
@@ -73,6 +73,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router)
 app.include_router(leads.router, prefix="/api/v1/leads", tags=["leads"])
 app.include_router(campaigns.router, prefix="/api/v1/campaigns", tags=["campaigns"])
 

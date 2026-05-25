@@ -64,3 +64,33 @@ class CampaignResponse(CampaignBase):
     started_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=8)
+    company_name: str | None = None
+
+
+class UserResponse(BaseModel):
+    id: uuid.UUID
+    email: EmailStr
+    is_active: bool
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TokenResponse(BaseModel):
+    jwt_token: str
+    token_type: str = "bearer"
+    expires_in: int
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class TokenRefreshRequest(BaseModel):
+    refresh_token: str

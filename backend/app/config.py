@@ -18,5 +18,10 @@ class Settings(BaseSettings):
     APP_ENV: str = "dev"
     DEBUG: bool = False
 
+    JWT_SECRET_KEY: str = "super_secret_fallback_dev_key_32_characters_long"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_HOURS: int = 24
+    PASSWORD_MIN_LENGTH: int = 8
+
 
 settings = Settings()
