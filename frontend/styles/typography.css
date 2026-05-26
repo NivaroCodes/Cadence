@@ -1,0 +1,94 @@
+body {
+  font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  color: var(--ink);
+  background: var(--paper);
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+.serif {
+  font-family: 'Instrument Serif', 'Newsreader', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.mono, code, kbd, .label {
+  font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-feature-settings: 'zero', 'ss02';
+}
+
+.label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.label-ink { color: var(--ink); }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.eyebrow::before {
+  content: "";
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(217, 72, 42, 0.16);
+}
+
+h1, h2, h3, h4 { font-weight: 400; letter-spacing: -0.02em; line-height: 1.02; }
+
+.h-display {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(56px, 9vw, 132px);
+  font-weight: 400;
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+}
+
+.h-section {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(40px, 6vw, 88px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+}
+
+.h-mega {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(160px, 28vw, 420px);
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  font-feature-settings: 'lnum', 'tnum';
+}
+
+.italic { font-style: italic; }
+.accent { color: var(--accent); }
+.muted { color: var(--muted); }
+.ink-2 { color: var(--ink-2); }
+
+.lead {
+  font-size: clamp(18px, 1.4vw, 22px);
+  line-height: 1.4;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.5ch;
+  height: 1em;
+  background: var(--accent);
+  vertical-align: -0.12em;
+  margin-left: 2px;
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }

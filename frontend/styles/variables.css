@@ -1,0 +1,23 @@
+:root {
+  --paper: #F2EEE3;
+  --paper-2: #ECE7D8;
+  --ink: #0E0D0B;
+  --ink-2: #1A1814;
+  --muted: #6B6660;
+  --muted-2: #9A9389;
+  --rule: #D9D2C0;
+  --rule-strong: #BDB39E;
+  --accent: #D9482A;
+  --accent-2: #B83A1F;
+  --signal: #E8B83A;
+
+  --maxw: 1320px;
+  --gutter: clamp(20px, 4vw, 56px);
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 14px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}

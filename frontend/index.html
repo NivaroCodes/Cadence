@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Cadence — AI sales agent built for Kazakhstan and the CIS. Discovers leads, writes personalised emails in RU/KZ/EN, and follows up on its own." />
+<title>Cadence — The sales agent that writes its own follow-ups</title>
+<link rel="icon" type="image/svg+xml" href="assets/cadence-icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles/reset.css" />
+<link rel="stylesheet" href="styles/variables.css" />
+<link rel="stylesheet" href="styles/typography.css" />
+<link rel="stylesheet" href="styles/layout.css" />
+<link rel="stylesheet" href="styles/sections.css" />
+<link rel="stylesheet" href="styles/animations.css" />
+</head>
+<body>
+
+<div class="page-frame" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Primary">
+  <a href="#top" class="nav-logo">
+    <span class="mark"></span>
+    <span>Cadence</span>
+  </a>
+  <div class="nav-meta">
+    <span class="live-label"><span class="dot"></span>&nbsp;&nbsp;LIVE · ALMATY <span class="live-time">—:—</span></span>
+    <a href="#access" class="btn nav-cta">Early access <span class="arrow">→</span></a>
+  </div>
+</nav>
+
+<main id="top">
+
+<!-- ============ 01 HERO ============ -->
+<section class="hero" id="hero" data-screen-label="01 Hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="eyebrow" data-reveal="fade">FIELD NOTE / 2026 · OUTBOUND, AUTOMATED</div>
+        <h1 class="hero-headline">
+          <span class="mask-line"><span>Cadence writes</span></span>
+          <span class="mask-line"><span>the emails<span class="muted">.</span></span></span>
+          <span class="mask-line"><span><em class="accent-word">You</em> close</span></span>
+          <span class="mask-line"><span>the deals<span class="accent">.</span></span></span>
+        </h1>
+        <p class="hero-sub" data-reveal style="--reveal-delay: 600ms;">
+          An AI sales agent for B2B teams in Kazakhstan and the CIS. It discovers prospects,
+          studies each one, drafts personalised emails in Russian, Kazakh or English, and
+          follows up on day 3 and day 7 — until someone replies.
+        </p>
+        <div class="hero-actions" data-reveal style="--reveal-delay: 720ms;">
+          <a href="#access" class="btn">Get early access <span class="arrow">→</span></a>
+          <a href="#video" class="btn btn-ghost">Watch demo <span class="arrow">→</span></a>
+          <span class="meta">FREE FOR FIRST 50 COMPANIES</span>
+        </div>
+
+        <dl class="hero-meta-row" data-reveal style="--reveal-delay: 860ms;">
+          <div>
+            <div class="stat">RU · KZ · EN</div>
+            <div class="stat-label">Languages, auto-detected</div>
+          </div>
+          <div>
+            <div class="stat">Day 1 / 3 / 7</div>
+            <div class="stat-label">Follow-up cadence</div>
+          </div>
+          <div>
+            <div class="stat">Gmail API</div>
+            <div class="stat-label">Sends from your inbox</div>
+          </div>
+        </dl>
+      </div>
+
+      <aside class="hero-right" data-reveal="rise-lg" style="--reveal-delay: 400ms;">
+        <div class="email-card" aria-label="Cadence drafting an email in real time">
+          <div class="email-head">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="title">cadence · agent · draft</div>
+            <div class="status"><span class="pulse"></span>WRITING</div>
+          </div>
+          <dl class="email-meta">
+            <dt>TO</dt>
+            <dd>aigerim.bekova@kazpost.kz</dd>
+            <dt>FROM</dt>
+            <dd>dinara@yourdomain.kz</dd>
+            <dt>LANG</dt>
+            <dd>
+              <span class="lang-pills">
+                <span class="pill on">RU</span>
+                <span class="pill">KZ</span>
+                <span class="pill">EN</span>
+              </span>
+            </dd>
+          </dl>
+          <div class="email-body" id="hero-email-body"></div>
+          <div class="email-footer">
+            <span>SCHEDULED · TUE 09:14 ALMATY</span>
+            <div class="progress"><span id="hero-email-progress"></span></div>
+            <span>4 / 4 LINES</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 PROBLEM ============ -->
+<section class="problem" id="problem" data-screen-label="02 Problem">
+  <div class="container">
+    <div class="problem-intro">
+      <div class="eyebrow" data-reveal>02 / THE PROBLEM</div>
+      <h2 class="h-section serif" data-reveal>
+        Cold email is broken<span class="accent">.</span>
+        <span class="muted italic">Templates don't fix it.</span>
+      </h2>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-number" data-reveal>
+        <span data-counter="4" data-duration="1400">0</span><span class="unit">hrs</span>
+      </div>
+      <div class="problem-copy" data-reveal style="--reveal-delay: 200ms;">
+        <div class="label label-ink">01 · TIME LOST</div>
+        <h3 class="serif">Sales reps spend four hours a day writing emails.</h3>
+        <p>Manually researching each prospect, drafting an opener, rewriting the subject line. By Wednesday afternoon, you've sent 12 emails and run out of context.</p>
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-number" data-reveal>
+        <span data-counter="12" data-duration="1600">0</span><span class="unit">%</span>
+      </div>
+      <div class="problem-copy" data-reveal style="--reveal-delay: 200ms;">
+        <div class="label label-ink">02 · WHAT YOU GET</div>
+        <h3 class="serif">Average open rate of a cold email in 2026.</h3>
+        <p>Inboxes are louder than ever. Generic openers get filtered before a human reads them. Your 4-hour day produces, at best, one good conversation.</p>
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-number" data-reveal>
+        <span data-counter="0" data-duration="1200">0</span>
+      </div>
+      <div class="problem-copy" data-reveal style="--reveal-delay: 200ms;">
+        <div class="label label-ink">03 · THE REASON</div>
+        <h3 class="serif">Personalisation in a template-based blast.</h3>
+        <p>Variables like <code>{{first_name}}</code> aren't personalisation. Real outreach requires reading the prospect's site, their LinkedIn, last week's press — something a human does, but not at scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 HOW IT WORKS ============ -->
+<section class="how" id="how" data-screen-label="03 How it works">
+  <div class="how-pin">
+    <div class="how-sticky">
+      <div class="how-head">
+        <div>
+          <div class="eyebrow">03 / HOW IT WORKS</div>
+          <h2 class="how-title serif" style="margin-top: 14px;">Five steps. <em class="accent" style="color: var(--accent);">No prompts.</em></h2>
+        </div>
+        <div class="how-progress"><span class="current">01</span> / <span class="total">05</span></div>
+      </div>
+      <div class="how-track">
+        <div class="how-rail">
+
+          <article class="how-step">
+            <div>
+              <div class="step-num">STEP 01</div>
+              <h3 class="step-title">Describe your ideal customer once.</h3>
+              <p class="step-desc">A sentence is enough. "B2B logistics companies in KZ, 50–500 employees, expanding cross-border." The agent does the rest.</p>
+            </div>
+            <pre class="step-visual">&gt; icp.create({
+    region: "KZ, UZ, RU",
+    size:   "50-500",
+    sector: "logistics · b2b",
+    signal: "expansion"
+  })
+SAVED — icp_028</pre>
+          </article>
+
+          <article class="how-step">
+            <div>
+              <div class="step-num">STEP 02</div>
+              <h3 class="step-title">Agent finds prospects.</h3>
+              <p class="step-desc">Pulls from 200M+ verified B2B contacts, filtered to the CIS market and the decision-makers who actually open email.</p>
+            </div>
+            <pre class="step-visual">SEARCHING…
+  · kazpost.kz          ✓ 14 leads
+  · tagai.uz            ✓ 6 leads
+  · ozon-express.ru     ✓ 22 leads
+  · halyk.kz            ✓ 9 leads
+  · …
+TOTAL 248 PROSPECTS</pre>
+          </article>
+
+          <article class="how-step">
+            <div>
+              <div class="step-num">STEP 03</div>
+              <h3 class="step-title">Studies each one before writing.</h3>
+              <p class="step-desc">Reads the prospect's website, news mentions, LinkedIn role. Identifies the hook that's unique to them — not to their industry.</p>
+            </div>
+            <pre class="step-visual">aigerim.bekova @ kazpost
+  ─ ops director, 6y
+  ─ press: "14 regions, Q3"
+  ─ stack: 1c, asana, slack
+  ─ hook: rollout timeline
+CONFIDENCE 0.87 ✓</pre>
+          </article>
+
+          <article class="how-step">
+            <div>
+              <div class="step-num">STEP 04</div>
+              <h3 class="step-title">Writes a personalised email.</h3>
+              <p class="step-desc">In the prospect's preferred language. Reference to their specific hook. Subject lines that don't sound like a template. Sent through your Gmail.</p>
+            </div>
+            <pre class="step-visual">DRAFT  · RU
+SUBJ   · Развёртывание в 14 регионах
+HOOK   · onboarding velocity
+LENGTH · 91 words · readable in 22s
+SCHED  · Tue 09:14 Almaty
+OK TO SEND ✓</pre>
+          </article>
+
+          <article class="how-step how-step--wide">
+            <div class="step-copy">
+              <div>
+                <div class="step-num">STEP 05</div>
+                <h3 class="step-title">Tracks replies. Follows up. Stops.</h3>
+                <p class="step-desc">Detects a real reply (not an out-of-office). Pauses the cadence the moment a human responds. Follow-ups on day 3 and day 7 if silent.</p>
+              </div>
+              <div class="step-num" style="margin-top: 28px;">CAMPAIGN · #4291 · KAZPOST</div>
+            </div>
+            <div class="step-log">
+              <div class="log-head">
+                <span>CAMPAIGN LOG</span>
+                <span class="live">LIVE</span>
+              </div>
+              <div class="row">
+                <span class="d">DAY 01</span>
+                <span class="e">Initial email sent</span>
+                <span class="s">09:14</span>
+              </div>
+              <div class="row">
+                <span class="d">DAY 03</span>
+                <span class="e">Follow-up #1 · no reply</span>
+                <span class="s">11:02</span>
+              </div>
+              <div class="row">
+                <span class="d">DAY 07</span>
+                <span class="e">Follow-up #2 · no reply</span>
+                <span class="s">09:48</span>
+              </div>
+              <div class="row reply">
+                <span class="d">DAY 09</span>
+                <span class="e">Reply detected → stop</span>
+                <span class="s">10:24 ✓</span>
+              </div>
+              <div class="handoff">
+                <span>HANDOFF</span>
+                <strong>→ dinara@</strong>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+      <div class="how-progress-bar"><span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 VIDEO ============ -->
+<section class="video-section" id="video" data-screen-label="04 Video">
+  <div class="container">
+    <div class="video-head">
+      <div>
+        <div class="eyebrow" data-reveal>04 / DEMO</div>
+        <h2 class="h-section serif" data-reveal style="margin-top: 18px;">See Cadence <em class="accent" style="color: var(--accent); font-style: italic;">in action.</em></h2>
+      </div>
+      <p data-reveal style="--reveal-delay: 120ms;">
+        Two minutes from blank inbox to a 248-lead campaign — including the moment the agent
+        re-writes a subject line because the first draft "sounded like a template."
+      </p>
+    </div>
+
+    <div class="video-player" data-reveal="rise-lg" role="button" aria-label="Play product demo">
+      <div class="thumb"></div>
+      <div class="scanline"></div>
+      <span class="corner tl">REC · 02:14</span>
+      <span class="corner tr">CAD · DEMO · v1.2</span>
+      <div class="play">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8V4z"/></svg>
+      </div>
+      <div class="vmeta"><span class="dot"></span>LIVE PRODUCT — NO SIMULATION</div>
+      <div class="vlen">02:14 / 02:14</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 LIVE EMAIL GENERATOR ============ -->
+<section class="gen-section" id="generator" data-screen-label="05 Email generator">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" data-reveal>05 / TRY IT</div>
+      <h2 class="h-section serif" data-reveal style="max-width: 18ch;">Give the agent a company. <span class="muted italic">Watch it write.</span></h2>
+    </div>
+
+    <div class="gen-grid">
+      <form class="gen-form" id="gen-form" data-reveal>
+        <div class="gen-field">
+          <label for="gen-company">COMPANY NAME</label>
+          <input id="gen-company" type="text" placeholder="Kazpost" value="Kazpost" autocomplete="off" />
+        </div>
+        <div class="gen-field">
+          <label for="gen-industry">INDUSTRY</label>
+          <input id="gen-industry" type="text" placeholder="Logistics, B2B" value="Logistics, B2B" autocomplete="off" />
+        </div>
+        <div class="gen-field">
+          <label for="gen-language">LANGUAGE</label>
+          <select id="gen-language">
+            <option value="ru">Russian — Русский</option>
+            <option value="kz">Kazakh — Қазақша</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <button type="submit" class="gen-submit" id="gen-submit">
+          <span class="gen-label">Generate email</span>
+          <span class="gen-kbd">↵ ENTER</span>
+        </button>
+        <div class="gen-meta">
+          <span>NO SIGNUP</span><span class="sep">·</span>
+          <span>SIMULATED OUTPUT</span><span class="sep">·</span>
+          <span>~12s</span>
+        </div>
+      </form>
+
+      <div class="gen-output" data-reveal style="--reveal-delay: 120ms;">
+        <div class="gen-output-head">
+          <span class="ttl">cadence · draft preview</span>
+          <span class="ttl" id="gen-status">IDLE</span>
+        </div>
+        <div class="gen-output-body">
+          <div id="gen-empty" class="gen-output-empty">
+            <h3 class="serif h-section">Press generate.</h3>
+            <p>A personalised draft appears here, character by character — exactly how the agent writes when it picks up a new lead in your inbox.</p>
+          </div>
+          <div id="gen-head" style="display:none;"></div>
+          <div id="gen-typed" class="gen-typed" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 CAMPAIGN TIMELINE ============ -->
+<section class="timeline-section" id="timeline" data-screen-label="06 Timeline">
+  <div class="container">
+    <div class="timeline-head">
+      <div>
+        <div class="eyebrow" data-reveal>06 / CADENCE</div>
+        <h2 class="h-section serif" data-reveal style="margin-top: 18px;">Nine days, four touches. <span class="muted italic">Until someone replies.</span></h2>
+      </div>
+      <p data-reveal style="--reveal-delay: 120ms;">
+        Cadence runs a precise sequence. The moment a real reply lands, the agent pauses the
+        thread and hands the conversation back to you. No double-emails. No "still interested?"
+        messages after a yes.
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-axis">
+        <div class="timeline-axis-fill"></div>
+      </div>
+
+      <article class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-day">DAY 01 · 09:14 ALMATY</div>
+          <h3 class="tl-title">Initial email — personalised, sent.</h3>
+          <p class="tl-desc">Subject references the prospect's specific hook. Body opens with context they recognise. Sent through your own Gmail address — not a third-party SMTP.</p>
+        </div>
+        <div class="tl-side">
+          <div class="row"><span>STATUS</span><span class="k">DELIVERED</span></div>
+          <div class="row"><span>OPENED</span><span class="k">14:38</span></div>
+          <div class="row"><span>LINKS</span><span class="k">2 / 2 CLICKED</span></div>
+          <div class="row"><span>REPLY</span><span>—</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-day">DAY 03 · 11:02 ALMATY</div>
+          <h3 class="tl-title">Follow-up #1 — short, in-thread.</h3>
+          <p class="tl-desc">Posted to the original thread, not as a new email. Two sentences. References the same hook with a fresh angle. Quiet, not pushy.</p>
+        </div>
+        <div class="tl-side">
+          <div class="row"><span>STATUS</span><span class="k">DELIVERED</span></div>
+          <div class="row"><span>THREAD</span><span class="k">#4291</span></div>
+          <div class="row"><span>OPENED</span><span class="k">—</span></div>
+          <div class="row"><span>REPLY</span><span>—</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-day">DAY 07 · 09:48 ALMATY</div>
+          <h3 class="tl-title">Follow-up #2 — last touch.</h3>
+          <p class="tl-desc">A graceful close. Offers an out, leaves the door open. The agent stops here — no chasing into week three. Calmer than every cold sequence you've ever run.</p>
+        </div>
+        <div class="tl-side">
+          <div class="row"><span>STATUS</span><span class="k">DELIVERED</span></div>
+          <div class="row"><span>THREAD</span><span class="k">#4291</span></div>
+          <div class="row"><span>OPENED</span><span class="k">18:11</span></div>
+          <div class="row"><span>REPLY</span><span>PENDING</span></div>
+        </div>
+      </article>
+
+      <article class="tl-item reply">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-day">DAY 09 · 10:24 ALMATY</div>
+          <h3 class="tl-title">Reply detected. Campaign stops.</h3>
+          <p class="tl-desc">A human replied — not an auto-responder, not a calendar bot. The agent pauses every scheduled message in the thread and hands the conversation back to you, with full context attached.</p>
+        </div>
+        <div class="tl-side">
+          <div class="row"><span>STATUS</span><span class="k" style="color: var(--accent);">REPLY ✓</span></div>
+          <div class="row"><span>FROM</span><span class="k">AIGERIM B.</span></div>
+          <div class="row"><span>SENTIMENT</span><span class="k">POSITIVE</span></div>
+          <div class="row"><span>HANDOFF</span><span class="k">→ DINARA@</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 WITHOUT vs WITH ============ -->
+<section class="versus-section" id="versus" data-screen-label="07 Versus">
+  <div class="container" style="margin-bottom: clamp(40px, 5vw, 64px);">
+    <div class="section-head">
+      <div class="eyebrow" data-reveal>07 / THE DIFFERENCE</div>
+      <h2 class="h-section serif" data-reveal style="max-width: 18ch;">A Tuesday afternoon, <span class="muted italic">told twice.</span></h2>
+    </div>
+  </div>
+
+  <div class="versus">
+    <div class="versus-side versus-without" data-reveal>
+      <div class="eyebrow">WITHOUT CADENCE</div>
+      <h3>The way it goes today.</h3>
+      <div class="versus-list">
+        <div class="versus-item">
+          <span class="num">01</span>
+          <div>
+            <div class="text">A rep spends 20 minutes researching one prospect, then 15 more writing the email.</div>
+            <div class="sub">35 minutes per outbound message. Eight a day, if focused.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">02</span>
+          <div>
+            <div class="text">Subject line is a template variant. The prospect has seen it six times.</div>
+            <div class="sub">Filtered as promotional before it reaches the inbox.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">03</span>
+          <div>
+            <div class="text">Follow-ups land in a separate thread, three days late.</div>
+            <div class="sub">"Just bumping this" — and the prospect doesn't remember the first email.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">04</span>
+          <div>
+            <div class="text">Reply detection means refreshing Gmail at 6pm.</div>
+            <div class="sub">Two replies go cold over the weekend. One closes elsewhere.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">05</span>
+          <div>
+            <div class="text">By Friday, the pipeline shows 40 sent, 5 opened, 0 replies.</div>
+            <div class="sub">And next week the rep starts over.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="versus-side versus-with" data-reveal style="--reveal-delay: 120ms;">
+      <div class="eyebrow">WITH CADENCE</div>
+      <h3>The way it goes <span class="accent">now.</span></h3>
+      <div class="versus-list">
+        <div class="versus-item">
+          <span class="num">01</span>
+          <div>
+            <div class="text">Cadence drafts a personalised email in <span class="accent">four seconds.</span></div>
+            <div class="sub">Reads the prospect's site and last quarter's press in the same breath.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">02</span>
+          <div>
+            <div class="text">Subject lines built from the prospect's actual context.</div>
+            <div class="sub">Open rate 38% in the CIS pilot — three times the industry average.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">03</span>
+          <div>
+            <div class="text">Follow-ups arrive in the same thread, two sentences, on day 3.</div>
+            <div class="sub">The agent quotes the original hook without copy-pasting it.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">04</span>
+          <div>
+            <div class="text">A real reply pauses the cadence within 90 seconds.</div>
+            <div class="sub">You hear about it in Slack, not by refreshing Gmail.</div>
+          </div>
+        </div>
+        <div class="versus-item">
+          <span class="num">05</span>
+          <div>
+            <div class="text">By Friday: 248 sent, 94 opened, 17 replies. <span class="accent">Six demos booked.</span></div>
+            <div class="sub">The rep spent the week closing — not writing.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 BUILT FOR CIS ============ -->
+<section class="cis" id="cis" data-screen-label="08 CIS">
+  <svg class="cis-bg" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="0.9" fill="#BDB39E" opacity="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="1400" height="800" fill="url(#dots)" />
+  </svg>
+
+  <div class="container">
+    <div class="cis-head">
+      <div>
+        <div class="eyebrow" data-reveal>08 / BUILT FOR CIS</div>
+        <h2 class="h-section serif" data-reveal style="margin-top: 18px;">The only sales agent <span class="accent">built for</span> <span class="muted italic">Astana, Tashkent, Moscow.</span></h2>
+      </div>
+      <p data-reveal style="--reveal-delay: 120ms;">
+        Apollo and Clay weren't designed with Cyrillic subject lines, KZ market hours, or
+        Kazakh greetings in mind. Cadence was — from the database up.
+      </p>
+    </div>
+
+    <div class="cis-blocks">
+
+      <div class="cis-block" data-reveal>
+        <span class="corner-mark">A · LANG</span>
+        <div class="label">01 / LANGUAGES</div>
+        <h4 class="serif">Trilingual, by default.</h4>
+        <p>Detects the prospect's language from their site, name, and domain — then writes accordingly. No bolt-on translation layer.</p>
+        <div class="cis-langs">
+          <div class="lang"><strong>RU</strong>Russian</div>
+          <div class="lang"><strong>KZ</strong>Қазақша</div>
+          <div class="lang"><strong>EN</strong>English</div>
+        </div>
+      </div>
+
+      <div class="cis-block" data-reveal style="--reveal-delay: 120ms;">
+        <span class="corner-mark">B · CONTEXT</span>
+        <div class="label">02 / LOCAL CONTEXT</div>
+        <h4 class="serif">Knows how business gets done here.</h4>
+        <p>Understands KZ holiday calendars, the difference between Nauryz and a quiet Tuesday, and that decision-makers in Tashkent don't read email after 7pm.</p>
+        <div class="cis-map">
+          <svg viewBox="0 0 380 140" aria-hidden="true">
+            <g fill="none" stroke="#BDB39E" stroke-width="1">
+              <path d="M10,90 C60,70 120,82 180,72 C240,64 300,78 370,68" />
+              <path d="M10,110 C60,98 120,108 180,100 C240,92 300,104 370,98" opacity="0.5" />
+            </g>
+            <g font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6660" letter-spacing="1">
+              <circle cx="60" cy="78" r="3" fill="#D9482A"/>
+              <text x="60" y="62" text-anchor="middle">MOSCOW</text>
+
+              <circle cx="170" cy="74" r="3" fill="#0E0D0B"/>
+              <text x="170" y="58" text-anchor="middle">ASTANA</text>
+
+              <circle cx="220" cy="80" r="3" fill="#0E0D0B"/>
+              <text x="220" y="98" text-anchor="middle">ALMATY</text>
+
+              <circle cx="270" cy="76" r="3" fill="#0E0D0B"/>
+              <text x="270" y="60" text-anchor="middle">TASHKENT</text>
+
+              <circle cx="320" cy="72" r="3" fill="#0E0D0B"/>
+              <text x="320" y="58" text-anchor="middle">BISHKEK</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="cis-block" data-reveal style="--reveal-delay: 240ms;">
+        <span class="corner-mark">C · STACK</span>
+        <div class="label">03 / GMAIL NATIVE</div>
+        <h4 class="serif">Connect Gmail. That's the setup.</h4>
+        <p>No SMTP relays, no domain warming services, no "deliverability score" dashboards. Cadence sends from your real inbox, where your replies already live.</p>
+        <div class="cis-flow">
+          <div class="step"><span class="ico">✓</span> CONNECT GMAIL</div>
+          <div class="arr">↓</div>
+          <div class="step"><span class="ico">✓</span> DESCRIBE YOUR ICP</div>
+          <div class="arr">↓</div>
+          <div class="step"><span class="ico">✓</span> AGENT RUNS</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 EARLY ACCESS + FOOTER ============ -->
+<section class="access" id="access" data-screen-label="09 Access">
+  <div class="container">
+    <div class="eyebrow" data-reveal>09 / EARLY ACCESS</div>
+    <h2 data-reveal>The first <span class="accent">fifty</span> get it free.</h2>
+    <p class="sub" data-reveal style="--reveal-delay: 100ms;">
+      We're onboarding fifty CIS-based B2B teams before public launch. No card, no contract — just
+      the agent, your Gmail, and three months to see if it changes how you sell.
+    </p>
+
+    <form class="access-form" id="access-form" data-reveal style="--reveal-delay: 200ms;">
+      <input type="email" placeholder="you@company.kz" required autocomplete="email" />
+      <button type="submit">Request access <span style="margin-left:2px;">→</span></button>
+    </form>
+
+    <div class="success" id="access-success">
+      <span class="check">✓</span>
+      <div>
+        <strong style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">YOU'RE ON THE LIST</strong>
+        <div style="color: var(--muted); margin-top: 4px; font-size: 13px;">We'll reach out within 48 hours from dinara@cadence.kz.</div>
+      </div>
+    </div>
+
+    <div class="access-counter" data-reveal style="--reveal-delay: 320ms;">
+      <strong>23</strong> / 50 SEATS CLAIMED · 27 REMAINING
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex: 0 0 auto;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" style="width: 32px; height: 32px;">
+                <circle cx="32" cy="32" r="32" fill="var(--ink)"/>
+                <line x1="8" y1="32" x2="56" y2="32" stroke="var(--accent)" stroke-width="2"/>
+                <line x1="32" y1="8" x2="32" y2="56" stroke="var(--paper)" stroke-width="2"/>
+              </svg>
+            </div>
+            <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 24px; letter-spacing: -0.01em; line-height: 1; color: var(--ink);">Cadence</span>
+          </div>
+          <p>An AI sales agent for B2B teams in Kazakhstan and the CIS. Built in Kazakhstan.</p>
+          <p style="margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);">© 2026 Cadence</p>
+        </div>
+        <div class="footer-col">
+          <h5>PRODUCT</h5>
+          <ul>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#video">Watch demo</a></li>
+            <li><a href="#generator">Try the generator</a></li>
+            <li><a href="#access">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>COMPANY</h5>
+          <ul>
+            <li><a href="#cis">Built for CIS</a></li>
+            <li><a href="mailto:hello@cadence.kz">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>CONNECT</h5>
+          <ul>
+            <li><a href="mailto:hello@cadence.kz">hello@cadence.kz</a></li>
+            <li><a href="https://linkedin.com/company/cadence-kz" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://x.com/cadencekz" target="_blank" rel="noopener">X / Twitter</a></li>
+            <li><a href="https://t.me/cadencekz" target="_blank" rel="noopener">Telegram</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</section>
+
+</main>
+
+<script src="scripts/navbar.js"></script>
+<script src="scripts/hero.js"></script>
+<script src="scripts/scroll-animations.js"></script>
+<script src="scripts/email-generator.js"></script>
+
+</body>
+</html>
