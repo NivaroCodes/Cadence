@@ -10,10 +10,10 @@ class Settings(BaseSettings):
 
     GEMINI_API_KEY: str
     DATABASE_URL: str
-    REDIS_URL: str
-    GMAIL_CREDENTIALS_PATH: str
+    REDIS_URL: str = "redis://localhost:6379"
+    GMAIL_CREDENTIALS_PATH: str = "credentials.json"
     GMAIL_TOKEN_PATH: str = "token.pickle"
-    TELEGRAM_BOT_TOKEN: str
+    TELEGRAM_BOT_TOKEN: str = "dummy_telegram_token"
 
     APP_ENV: str = "dev"
     DEBUG: bool = False
