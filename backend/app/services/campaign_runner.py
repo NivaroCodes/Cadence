@@ -133,6 +133,7 @@ class CampaignRunner:
 
                 if sent:
                     msg = Message(
+                        user_id=campaign.user_id,
                         campaign_id=campaign_id,
                         lead_id=lead.id,
                         channel=channel,
@@ -269,6 +270,7 @@ class CampaignRunner:
 
                 if sent:
                     new_msg = Message(
+                        user_id=m.campaign.user_id,
                         campaign_id=m.campaign_id,
                         lead_id=m.lead_id,
                         channel=m.channel,
@@ -342,6 +344,7 @@ class CampaignRunner:
 
                 if sent:
                     new_msg = Message(
+                        user_id=m.campaign.user_id,
                         campaign_id=m.campaign_id,
                         lead_id=m.lead_id,
                         channel=m.channel,
