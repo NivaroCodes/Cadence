@@ -47,8 +47,9 @@ def build_followup_prompt(
         f"- Write the follow-up message body only. No subject line.\n"
         f"- Recipient Name: {recipient_name}\n"
         f"- Company: {company}\n"
+        f"- CRITICAL SENDER RULE: Sender is ALWAYS 'Cadence Team' (not a personal name). Sign the email as '— Cadence Team'.\n"
+        f"- CRITICAL RECIPIENT RULE: NEVER invent or use fictional/random first names (like Alibek, Dinara, etc.) for the recipient. If the recipient name is not explicitly known, use a generic professional title like 'Specialist', 'Manager', or 'Director' (e.g. 'Здравствуйте,' or 'Hi Specialist,').\n"
         f"- CRITICAL: Never use placeholder text like [CEO Name], [Company Name], [My Name], [My Title]. "
         f"If you don't know the CEO/recipient name, use a neutral greeting like 'Hi there,' or 'Hi {company} team,'. "
-        f"Replace [Company Name] with the actual company name from context: {company}. "
-        f"Sign the email as 'The Cadence Team'.\n"
+        f"Replace [Company Name] with the actual company name from context: {company}.\n"
     )

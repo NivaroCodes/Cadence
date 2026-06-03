@@ -12,42 +12,46 @@
 
   const templates = {
     'ru': (c, ind) => [
-      { l: 'TO', t: `${(c || 'Компания').toLowerCase().replace(/\s+/g, '.')}@example.kz` },
-      { l: 'SUBJ', t: `Cadence × ${c || 'Компания'} — 12 минут?` },
-      { l: 'LANG', t: 'RU · автоматически определён' },
+      { l: 'TO', t: `specialist@${(c || 'spotify').toLowerCase().replace(/\s+/g, '')}.kz` },
+      { l: 'SUBJ', t: `Cadence: Personalized Email Automation for ${c || 'Spotify'}` },
+      { l: 'LANG', t: 'RU' },
       { body: [
-        `Здравствуйте, Алибек.`,
-        `Заметил, что ${c || 'ваша компания'} активно расширяется в сегменте ${ind || 'B2B-логистики'} — это требует серьёзного outbound-пайплайна.`,
-        `Cadence пишет персонализированные письма каждому лиду на казахском, русском или английском, отправляет их через Gmail и отслеживает ответы автоматически.`,
-        `Команды в КЗ экономят 4 часа в день. Покажу 12-минутное демо?`,
-        `— Динара, Cadence`
+        `Здравствуйте,`,
+        `Заметил, что ${c || 'Spotify'} активно расширяется в сегменте ${ind || 'Music Streaming'}.`,
+        `Cadence пишет персонализированные письма каждому лиду на казахском, русском или английском, отправляет их через Gmail и отслеживает ответ автоматически.`,
+        `Команды в КЗ экономят 4 часа в день.`,
+        `Хотите узнать подробнее?`,
+        `— Cadence Team`
       ]}
     ],
     'kz': (c, ind) => [
-      { l: 'TO', t: `${(c || 'kompaniya').toLowerCase().replace(/\s+/g, '.')}@example.kz` },
-      { l: 'SUBJ', t: `${c || 'Компанияңыз'} үшін Cadence — 12 минут?` },
-      { l: 'LANG', t: 'KZ · автоматически определён' },
+      { l: 'TO', t: `specialist@${(c || 'spotify').toLowerCase().replace(/\s+/g, '')}.kz` },
+      { l: 'SUBJ', t: `Cadence: Personalized Email Automation for ${c || 'Spotify'}` },
+      { l: 'LANG', t: 'KZ' },
       { body: [
-        `Сәлеметсіз бе, Алибек.`,
-        `${c || 'Сіздің компанияңыз'} ${ind || 'B2B-логистика'} саласында белсенді өсіп жатқанын байқадым.`,
+        `Сәлеметсіз бе,`,
+        `${c || 'Spotify'} ${ind || 'Music Streaming'} саласында белсенді өсіп жатқанын байқадым.`,
         `Cadence әр лидке қазақ, орыс немесе ағылшын тілінде дербес хат жазады, Gmail арқылы жібереді және жауаптарды автоматты түрде қадағалайды.`,
-        `Қазақстандағы командалар күніне 4 сағат үнемдейді. 12 минуттық демо көрсетейін бе?`,
-        `— Динара, Cadence`
+        `Қазақстандағы командалар күніне 4 сағат үнемдейді.`,
+        `Толығырақ білгіңіз келе ме?`,
+        `— Cadence Team`
       ]}
     ],
     'en': (c, ind) => [
-      { l: 'TO', t: `intro@${(c || 'company').toLowerCase().replace(/\s+/g, '')}.com` },
-      { l: 'SUBJ', t: `${c || 'Company'} × Cadence — 12 minutes?` },
-      { l: 'LANG', t: 'EN · auto-detected' },
+      { l: 'TO', t: `specialist@${(c || 'spotify').toLowerCase().replace(/\s+/g, '')}.kz` },
+      { l: 'SUBJ', t: `Cadence: Personalized Email Automation for ${c || 'Spotify'}` },
+      { l: 'LANG', t: 'EN' },
       { body: [
-        `Hi Alibek,`,
-        `Noticed ${c || 'your team'} is expanding rapidly in ${ind || 'B2B logistics'} — that demands a serious outbound pipeline.`,
+        `Hi,`,
+        `Noticed ${c || 'Spotify'} is expanding rapidly in ${ind || 'Music Streaming'}.`,
         `Cadence drafts personalised emails to every lead in Kazakh, Russian, or English, sends them via Gmail, and tracks replies automatically.`,
-        `Teams in KZ are reclaiming 4 hours a day. Show you a 12-min demo?`,
-        `— Dinara, Cadence`
+        `Teams in KZ are reclaiming 4 hours a day.`,
+        `Would you like to learn more?`,
+        `— Cadence Team`
       ]}
     ]
   };
+
 
   let typing = false;
   let abortTyping = null;

@@ -62,8 +62,7 @@ def build_email_prompt(
         f"- No generic phrases like 'I hope this email finds you well'\n"
         f"- Reference a specific pain point naturally in the opening\n"
         f"- Do not mention you used AI to write this\n"
-        f"- CRITICAL: Never use placeholder text like [CEO Name], [Company Name], [My Name], [My Title]. "
-        f"If you don't know the CEO name, use a neutral greeting like 'Hi there,' or 'Hi {company} team,'. "
-        f"Replace [Company Name] with the actual company name from context: {company}. "
-        f"Sign the email as 'The Cadence Team'.\n"
+        f"- CRITICAL SENDER RULE: Sender is ALWAYS 'Cadence Team' (not a personal name). Sign the email as '— Cadence Team'.\n"
+        f"- CRITICAL RECIPIENT RULE: NEVER invent or use fictional/random first names (like Alibek, Dinara, etc.) for the recipient. If the recipient name is not explicitly known, use a generic professional title like 'Specialist', 'Manager', or 'Director' (e.g. 'Здравствуйте,' or 'Hi Specialist,').\n"
+        f"- Email address rule: If email addresses are shown, use realistic patterns based on company domain (like specialist@company.kz).\n"
     )
