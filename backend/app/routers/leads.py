@@ -35,9 +35,12 @@ async def create_lead(
             detail="Lead with this email already exists."
         )
 
+    lead_data = lead_in.model_dump(exclude_unset=True, exclude_none=True)
+    lead_data.pop("first_name", None)
+    lead_data.pop("last_name", None)
     db_lead = Lead(
         user_id=current_user.id,
-        **lead_in.model_dump(exclude_unset=True, exclude_none=True)
+        **lead_data
     )
     if db_lead.linkedin_url:
         db_lead.linkedin_url = str(db_lead.linkedin_url)

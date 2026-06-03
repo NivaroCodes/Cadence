@@ -26,7 +26,7 @@ init_persistent_secrets()
 
 from app.config import settings
 from app.database import AsyncSessionLocal, engine
-from app.routers import auth, campaigns, leads, oauth
+from app.routers import auth, campaigns, leads, oauth, messages
 
 logging.basicConfig(
     level=logging.DEBUG if settings.DEBUG else logging.INFO,
@@ -77,6 +77,14 @@ app.include_router(auth.router)
 app.include_router(oauth.router)
 app.include_router(leads.router, prefix="/api/v1/leads", tags=["leads"])
 app.include_router(campaigns.router, prefix="/api/v1/campaigns", tags=["campaigns"])
+app.include_router(messages.router, prefix="/api/v1/messages", tags=["messages"])
+
+from fastapi import Query
+from fastapi.responses import RedirectResponse
+
+@app.get("/api/v1/oauth/gmail/authorize", tags=["Google OAuth"])
+async def gmail_authorize_alias(state: str = Query("00000000-0000-0000-0000-000000000000")):
+    return RedirectResponse(url=f"/oauth/google/authorize?state={state}")
 
 
 @app.get("/health", tags=["infra"])

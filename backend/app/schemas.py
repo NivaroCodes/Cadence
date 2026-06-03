@@ -1,10 +1,11 @@
 import uuid
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Any
 
-from pydantic import BaseModel, ConfigDict, EmailStr, HttpUrl, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, HttpUrl, Field, model_validator
 
 from app.models.campaign import CampaignLanguage, CampaignStatus
+from app.models.message import MessageChannel, MessageStatus
 
 
 class LeadBase(BaseModel):
@@ -18,7 +19,28 @@ class LeadBase(BaseModel):
 
 
 class LeadCreate(LeadBase):
-    pass
+    name: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+
+    @model_validator(mode='before')
+    @classmethod
+    def assemble_name(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            first_name = data.get("first_name")
+            last_name = data.get("last_name")
+            name = data.get("name")
+            
+            if not name and first_name and last_name:
+                data["name"] = f"{first_name} {last_name}".strip()
+            elif not name and first_name:
+                data["name"] = first_name
+            elif not name and last_name:
+                data["name"] = last_name
+                
+            if not data.get("name"):
+                raise ValueError("Either 'name' or 'first_name'/'last_name' must be provided.")
+        return data
 
 
 class LeadUpdate(BaseModel):
@@ -94,3 +116,19 @@ class LoginRequest(BaseModel):
 
 class TokenRefreshRequest(BaseModel):
     refresh_token: str
+
+
+class MessageResponse(BaseModel):
+    id: uuid.UUID
+    campaign_id: uuid.UUID
+    lead_id: uuid.UUID
+    channel: MessageChannel
+    content: str
+    status: MessageStatus
+    recipient_address: str
+    sequence_number: int
+    sent_at: datetime | None = None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
